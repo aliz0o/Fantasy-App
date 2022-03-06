@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "119674404540",
+    "project_id": "fantasy-f7cfb",
+    "storage_bucket": "fantasy-f7cfb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:119674404540:android:03487520aeaf4a4eef5ab9",
+        "android_client_info": {
+          "package_name": "com.aliz0o.fantasy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "119674404540-lrgg676stdgt6f6jgn3bf4d4aps1ee3a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aliz0o.fantasy",
+            "certificate_hash": "015cbec4798f0ffdf18f727e5f399b0667f76954"
+          }
+        },
+        {
+          "client_id": "119674404540-tp34b4o5mopcklhn0djd41r5m0fmpjo6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_fp_JSym8b5qoJKByUpLmk5V_urgYdGQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "119674404540-tp34b4o5mopcklhn0djd41r5m0fmpjo6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

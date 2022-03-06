@@ -20,8 +20,9 @@ class _ChosePlayerScreenState extends State<ChosePlayerScreen> {
   ScrollController _controller;
   int pageKey = 1;
   FantasyViewModel viewModel = Get.put(FantasyViewModel());
-  List<bool> visible = List.generate(300, (index) => false);
+  List<bool> visible = [];
   bool showSearchBar = false;
+
   List<String> position = [
     'ALL',
     'Position.GOALKEEPER',
@@ -44,13 +45,14 @@ class _ChosePlayerScreenState extends State<ChosePlayerScreen> {
     viewModel.isSelected.assignAll([true, false, false, false, false]);
     viewModel.index.value = 0;
     viewModel.getData(pageKey);
+    viewModel.playerCounter.value = 0;
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    String term;
+    String term = '';
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -81,12 +83,18 @@ class _ChosePlayerScreenState extends State<ChosePlayerScreen> {
                   term = value;
                 },
                 decoration: InputDecoration(
-                    hintText: 'Search Players',
-                    hintStyle: TextStyle(color: Colors.white),
+                    fillColor: Colors.white,
+                    hintText: 'Insert More Than 3 Letters ...',
+                    hintStyle: TextStyle(
+                        color: Colors.white.withOpacity(0.50), fontSize: 12.5),
                     suffixIcon: IconButton(
                       icon: Icon(Icons.search, color: Colors.white),
                       onPressed: () {
-                        viewModel.getPlayerBySearch(term);
+                        if (term.length < 4) {
+                        } else {
+                          FocusScope.of(context).unfocus();
+                          viewModel.getPlayerBySearch(term);
+                        }
                       },
                     )),
               )
@@ -118,7 +126,7 @@ class _ChosePlayerScreenState extends State<ChosePlayerScreen> {
                         padding: const EdgeInsets.only(top: 6),
                         child: ToggleButtons(
                           constraints:
-                              BoxConstraints(minHeight: 30, minWidth: 79),
+                              BoxConstraints(minHeight: 30, minWidth: 75),
                           textStyle: TextStyle(fontSize: 10),
                           borderWidth: 2,
                           borderRadius: BorderRadius.circular(10),
@@ -128,6 +136,8 @@ class _ChosePlayerScreenState extends State<ChosePlayerScreen> {
                                 .assignAll([false, false, false, false, false]);
                             viewModel.isSelected[index] = true;
                             viewModel.index.value = index;
+                            viewModel.playerCounter.value = 0;
+                            viewModel.update();
                           },
                           children: [
                             Text('ALL'),
@@ -150,6 +160,10 @@ class _ChosePlayerScreenState extends State<ChosePlayerScreen> {
                               if (index >= viewModel.allPlayers.length &&
                                   pageKey <
                                       viewModel.players.value.paging.total) {
+                                if (viewModel.playerCounter.value < 20 &&
+                                    viewModel.isSelected[0] == false) {
+                                  viewModel.getDataWithoutLoading(++pageKey);
+                                }
                                 return Center(
                                     child: Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -167,31 +181,39 @@ class _ChosePlayerScreenState extends State<ChosePlayerScreen> {
                                               .toString() ==
                                           position[viewModel.index.value] ||
                                       viewModel.index.value == 0) &&
-                                  !playerId.contains(
+                                  !playersID.contains(
                                       viewModel.allPlayers[index].player.id)) {
+                                viewModel.playerCounter.value++;
+                                visible.add(false);
                                 return Padding(
                                   padding: const EdgeInsets.all(2.0),
                                   child: InkWell(
                                     onTap: () {
-                                      playerId[widget.id] =
-                                          viewModel.allPlayers[index].player.id;
-                                      playerName[widget.id] = viewModel
-                                          .allPlayers[index].player.name;
-                                      playerImage[widget.id] = viewModel
-                                          .allPlayers[index].player.photo;
-
-                                      Get.off(HomeScreen());
+                                      viewModel.changeIsLoadingStatus(true);
+                                      viewModel.updatePlayerList(
+                                          id: widget.id,
+                                          playerID: viewModel
+                                              .allPlayers[index].player.id,
+                                          playerName: viewModel
+                                              .allPlayers[index].player.name,
+                                          playerImage: viewModel
+                                              .allPlayers[index].player.photo);
                                     },
                                     child: Card(
                                       elevation: 10,
                                       child: Column(
+                                        crossAxisAlignment: GetPlatform.isWeb &&
+                                                MediaQuery.of(context)
+                                                        .orientation ==
+                                                    Orientation.landscape
+                                            ? CrossAxisAlignment.start
+                                            : CrossAxisAlignment.center,
                                         children: [
                                           Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.start,
                                             children: [
                                               Container(
-                                                //width: 200,
                                                 child: Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment.start,
@@ -216,10 +238,11 @@ class _ChosePlayerScreenState extends State<ChosePlayerScreen> {
                                                             style: TextStyle(
                                                                 fontWeight:
                                                                     FontWeight
-                                                                        .bold),
+                                                                        .bold,
+                                                                fontSize: 10),
                                                           ),
                                                           RatingBar.builder(
-                                                            itemSize: 15,
+                                                            itemSize: 12.5,
                                                             initialRating: viewModel
                                                                         .allPlayers[
                                                                             index]
@@ -281,20 +304,29 @@ class _ChosePlayerScreenState extends State<ChosePlayerScreen> {
                                                       fit: BoxFit.cover,
                                                     ),
                                                   )),
-                                              IconButton(
-                                                  onPressed: () {
-                                                    visible[index] =
-                                                        !visible[index];
-                                                    setState(() {});
-                                                  },
-                                                  icon: Icon(visible[index]
-                                                      ? Icons.arrow_drop_up
-                                                      : Icons.arrow_drop_down))
+                                              if (!(GetPlatform.isWeb &&
+                                                  MediaQuery.of(context)
+                                                          .orientation ==
+                                                      Orientation.landscape))
+                                                IconButton(
+                                                    onPressed: () {
+                                                      visible[index] =
+                                                          !visible[index];
+                                                      setState(() {});
+                                                    },
+                                                    icon: Icon(visible[index]
+                                                        ? Icons.arrow_drop_up
+                                                        : Icons
+                                                            .arrow_drop_down))
                                             ],
                                           ),
-                                          visible[index]
+                                          visible[index] ||
+                                                  GetPlatform.isWeb &&
+                                                      MediaQuery.of(context)
+                                                              .orientation ==
+                                                          Orientation.landscape
                                               ? DataTable(
-                                                  columnSpacing: 180,
+                                                  columnSpacing: 170,
                                                   columns: <DataColumn>[
                                                     DataColumn(
                                                       label:
@@ -352,8 +384,10 @@ class _ChosePlayerScreenState extends State<ChosePlayerScreen> {
                                     ),
                                   ),
                                 );
-                              } else
+                              } else {
+                                visible.add(false);
                                 return Container();
+                              }
                             }),
                       ),
                     ],
@@ -364,7 +398,3 @@ class _ChosePlayerScreenState extends State<ChosePlayerScreen> {
     );
   }
 }
-
-//git
-//git
-//git

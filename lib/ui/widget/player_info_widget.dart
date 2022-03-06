@@ -2,7 +2,6 @@ import 'package:fantasy/ui/chose_player_screen.dart';
 import 'package:fantasy/ui/widget/player_profile_picture.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'dart:developer';
 
 class PlayerInfoWidget extends StatefulWidget {
   final String position;
@@ -10,9 +9,11 @@ class PlayerInfoWidget extends StatefulWidget {
   final int playerId;
   final String playerName;
   final String playerImage;
+  final bool isMe;
 
   PlayerInfoWidget(
       {this.position,
+      this.isMe,
       this.id,
       this.playerId,
       this.playerName,
@@ -29,24 +30,24 @@ class _PlayerInfoWidgetState extends State<PlayerInfoWidget> {
         children: [
           InkWell(
             onTap: () {
-              widget.playerId == null
-                  ? Get.to(ChosePlayerScreen(
-                      position: widget.position,
-                      id: widget.id,
-                    ))
-                  : log(widget.position);
+              if (widget.isMe) {
+                Get.to(ChosePlayerScreen(
+                  position: widget.position,
+                  id: widget.id,
+                ));
+              }
             },
             child: Stack(
               children: [
                 PlayerProfilePicture(
-                    image: widget.playerId == null ? null : widget.playerImage),
-                if (widget.playerId == null)
+                    image: widget.playerId <= 0 ? null : widget.playerImage),
+                if (widget.isMe)
                   Positioned(
                       bottom: 0,
                       right: 0,
                       child: Container(
-                        height: 20,
-                        width: 20,
+                        height: 17,
+                        width: 17,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
@@ -57,7 +58,7 @@ class _PlayerInfoWidgetState extends State<PlayerInfoWidget> {
                         ),
                         child: Icon(
                           Icons.edit,
-                          size: 10,
+                          size: 8,
                           color: Colors.white,
                         ),
                       )),
@@ -66,7 +67,7 @@ class _PlayerInfoWidgetState extends State<PlayerInfoWidget> {
           ),
           SizedBox(height: 1),
           Text(
-            widget.playerId != null ? widget.playerName : '',
+            widget.playerId <= 0 ? '' : widget.playerName,
             style: TextStyle(
                 color: Colors.white,
                 fontSize: 13,

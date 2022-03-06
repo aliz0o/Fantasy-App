@@ -1,10 +1,12 @@
 import 'package:fantasy/ui/tab/home_screen_tab.dart';
-import 'package:fantasy/ui/tab/setting_screen_tab.dart';
+import 'package:fantasy/ui/tab/all_players_tap.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-List<int> playerId = new List(11);
-List<String> playerName = new List(11);
-List<String> playerImage = new List(11);
+List playersID = new List(11);
+List playersName = new List(11);
+List playersImage = new List(11);
+User user = FirebaseAuth.instance.currentUser;
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -14,8 +16,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
   final List<Widget> _children = [
-    HomeScreenTab(),
-    SettingScreenTab(),
+    HomeScreenTab(userID: user.uid),
+    AllPlayersTap(),
   ];
   void onTabTapped(int index) {
     setState(() {
@@ -27,7 +29,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _children[_currentIndex],
-      //backgroundColor: Color(0xff37003C),
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTabTapped,
         currentIndex:
@@ -38,8 +39,8 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
+            icon: Icon(Icons.person),
+            label: 'Players',
           ),
         ],
       ),

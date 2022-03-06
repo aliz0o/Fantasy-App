@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 
 class Api {
   var header = {
-    'x-rapidapi-key': 'abe1d18d1bmsh65a2c931549f680p10c951jsneb4f75b95c13',
+    'x-rapidapi-key': '7298b2b4cbmsh7de033dfb143233p1911a3jsn60b188f49fee',
     'x-rapidapi-host': 'api-football-v1.p.rapidapi.com'
   };
   Future<PlayersModel> getPlayers(int pageKey) async {

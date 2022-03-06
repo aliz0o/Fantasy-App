@@ -12,8 +12,8 @@ class _PlayerProfilePictureState extends State<PlayerProfilePicture> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: 57,
-        height: 57,
+        width: 50,
+        height: 50,
         decoration: BoxDecoration(
           color: widget.image != null
               ? Colors.white

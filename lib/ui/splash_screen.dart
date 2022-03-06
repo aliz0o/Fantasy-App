@@ -1,6 +1,8 @@
 import 'package:fantasy/ui/home_screen.dart';
+import 'package:fantasy/ui/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:splashscreen/splashscreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class TheSplashScreen extends StatefulWidget {
   @override
@@ -10,11 +12,12 @@ class TheSplashScreen extends StatefulWidget {
 class _TheSplashScreenState extends State<TheSplashScreen> {
   @override
   Widget build(BuildContext context) {
+    User user = FirebaseAuth.instance.currentUser;
     return SafeArea(
       child: SplashScreen(
           useLoader: true,
           seconds: 3,
-          navigateAfterSeconds: HomeScreen(),
+          navigateAfterSeconds: user == null ? LoginScreen() : HomeScreen(),
           title: new Text(
             'Fantasy',
             style: new TextStyle(
